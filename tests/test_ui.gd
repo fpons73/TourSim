@@ -62,6 +62,12 @@ func _ready() -> void:
 	SignalBus.navigation_requested.emit("race_view", {"stage_id": 1})
 	await _frames(5)
 
+	# Race view en modo control (equipo 1).
+	GameState.mode = "control"
+	GameState.player_team_id = 1
+	SignalBus.navigation_requested.emit("race_view", {"stage_id": 1})
+	await _frames(5)
+
 	SignalBus.navigation_requested.emit("home", {})
 	await _frames(2)
 

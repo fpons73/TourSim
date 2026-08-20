@@ -10,7 +10,7 @@
 - [x] Hito 5 — Menú + bibliotecas + ficha de corredor
 - [x] Hito 6 — Editores (Stage/Race/Team/Rider)
 - [x] Hito 7 — Race View + participantes + config de partida
-- [ ] Hito 8 — IA + modo espectador + control de equipo
+- [x] Hito 8 — IA + modo espectador + control de equipo
 - [ ] Hito 9 — Histórico + guardado + import/export
 - [ ] Hito 10 — Pulido (animaciones, sonido, transiciones, accesibilidad)
 
@@ -73,10 +73,10 @@
 - [ ] Decision Panel (→ hito 8)
 
 ### Hito 8 — IA
-- [ ] Objetivos de equipo
-- [ ] AI táctica contextual
-- [ ] Modo espectador
-- [ ] Control de un equipo
+- [x] Objetivos de equipo (TeamAI)
+- [x] AI táctica contextual (fuga/split/caza)
+- [x] Modo espectador
+- [x] Control de un equipo (Decision Panel + panel táctico)
 
 ### Hito 9 — Histórico
 - [ ] Guardar etapa/carrera (estado entre etapas)

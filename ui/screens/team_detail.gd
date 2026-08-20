@@ -22,6 +22,7 @@ func _build() -> void:
 
 	_list = add_scroll()
 	var riders := TeamRepo.get_riders(team_id)
+	_list.add_child(UIUtil.label("OBJETIVO: %s" % TeamAI.objective(riders), 12, Palette.YELLOW))
 	for row in riders:
 		_list.add_child(_rider_row(row))
 

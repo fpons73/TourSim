@@ -22,11 +22,15 @@ var classifications: Classifications
 var km: float = 0.0
 var finished: bool = false
 var stage_winner_id: int = -1
+var player_team_id: int = -1
+var pending_decision: Dictionary = {}
+var decisions_log: Array = []
 var _group_counter: int = 0
 
-func setup(p_stage: Stage, rider_rows: Array, team_rows: Array, seed_value: int) -> void:
+func setup(p_stage: Stage, rider_rows: Array, team_rows: Array, seed_value: int, p_player_team_id: int = -1) -> void:
 	stage = p_stage
 	rng = RNG.new(seed_value)
+	player_team_id = p_player_team_id
 	events = EventLog.new()
 	classifications = Classifications.new()
 
@@ -92,6 +96,8 @@ func resolve_to_end() -> Dictionary:
 func step() -> Dictionary:
 	if finished:
 		return snapshot()
+	if not pending_decision.is_empty():
+		return snapshot()
 	if stage.type in ["itt", "ttt", "prologue"]:
 		_resolve_time_trial()
 		return snapshot()
@@ -123,7 +129,25 @@ func snapshot() -> Dictionary:
 		"groups": gs,
 		"events": events.get_all(),
 		"event_count": events.count(),
+		"decision": pending_decision,
+		"player_riders": _player_riders_snapshot(),
 	}
+
+func _player_riders_snapshot() -> Array:
+	var out: Array = []
+	if player_team_id < 0:
+		return out
+	for r in riders:
+		if r.team_id != player_team_id:
+			continue
+		var g := _group_by_id(r.group_id)
+		out.append({
+			"id": r.id, "name": r.name,
+			"group": g.name if g != null else "-",
+			"gap": r.gap, "fatigue": r.fatigue, "status": r.status,
+		})
+	out.sort_custom(func(a, b): return a["fatigue"] < b["fatigue"])
+	return out
 
 func resolve_section(sec: Dictionary) -> void:
 	var a := float(sec.get("start_km", km))
@@ -157,6 +181,7 @@ func resolve_section(sec: Dictionary) -> void:
 		_award_sprint(sec)
 
 	_update_gaps(lead_time)
+	_maybe_generate_decision()
 
 ## Devuelve el tiempo (seg) del grupo líder tras avanzar esta sección.
 func _advance_groups(terrain: String, length: float) -> float:
@@ -262,6 +287,63 @@ func _handle_breakaway(sec: Dictionary, length: float) -> void:
 	events.add(km, "breakaway", "FUGA", "%s forman la fuga (%s)." % [
 		str(attackers.size()), ", ".join(names.slice(0, 3))],
 		attacker_ids(attackers))
+
+## Genera una decisión para el jugador si un rival está en fuga (PRD §14, §24).
+func _maybe_generate_decision() -> void:
+	if player_team_id < 0:
+		return
+	if not pending_decision.is_empty():
+		return
+	var fuga := _fuga_group()
+	if fuga == null:
+		return
+	var attacker: Rider = null
+	for r in fuga.riders:
+		if r.team_id != player_team_id:
+			attacker = r
+			break
+	if attacker == null:
+		return
+	var km_to_go := maxf(stage.distance - km, 0.0)
+	pending_decision = {
+		"type": "attack",
+		"title": "ATAQUE DETECTADO",
+		"attacker": attacker.name,
+		"attacker_team": attacker.team_abbr,
+		"text": "%s ataca. %d km para meta, el pelotón se tensa." % [attacker.name, int(km_to_go)],
+		"options": [
+			{"id": "respond", "label": "RESPONDER", "desc": "Tu líder salta al ataque (fatiga extra)."},
+			{"id": "attack", "label": "ATACAR", "desc": "Lanza tu propio ataque."},
+			{"id": "maintain", "label": "MANTENER RITMO", "desc": "Controla el ritmo del pelotón."},
+			{"id": "save", "label": "NO RESPONDER", "desc": "Ahorra fuerzas."},
+		],
+	}
+
+func apply_decision(choice_id: String) -> void:
+	var d := pending_decision.duplicate()
+	d["choice"] = choice_id
+	decisions_log.append(d)
+	pending_decision = {}
+	if choice_id == "respond" or choice_id == "attack":
+		var rider := _best_player_rider("att")
+		var fuga := _fuga_group()
+		if rider != null and fuga != null and rider.group_id != fuga.id:
+			_assign_to_group(rider, fuga)
+			rider.fatigue = clampf(rider.fatigue + 8.0, 0.0, 100.0)
+			events.add(km, "attack", "RESPUESTA", "%s responde al ataque y salta a la fuga." % rider.name, [rider.id])
+	elif choice_id == "maintain":
+		events.add(km, "info", "RITMO", "Tu equipo mantiene el ritmo del pelotón.", [])
+	else:
+		events.add(km, "info", "AHORRO", "Tu equipo se mantiene a cubierto.", [])
+
+func _best_player_rider(attr_key: String) -> Rider:
+	var best: Rider = null
+	for r in riders:
+		if r.team_id != player_team_id or r.status != "OK":
+			continue
+		if best == null or r.attr(attr_key) > best.attr(attr_key):
+			best = r
+	return best
 
 func _has_breakaway() -> bool:
 	for g in groups:

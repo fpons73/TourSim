@@ -68,6 +68,22 @@ func _ready() -> void:
 	var rtt := stt.resolve_to_end()
 	print("Winner CRE: ", rtt["winner_name"], " | top equipo: ", rtt["teams"][0]["name"])
 
+	# Test de decisiones (modo control de equipo).
+	var decision_seen := false
+	for sd in range(0, 30):
+		var stc := RaceState.new()
+		stc.setup(flat, rider_rows, team_rows, sd, 1)
+		var g := 0
+		while stc.pending_decision.is_empty() and not stc.finished and g < 50:
+			stc.step()
+			g += 1
+		if not stc.pending_decision.is_empty():
+			stc.apply_decision("respond")
+			decision_seen = true
+			print("Decision (seed %d): %s ataca -> respondido" % [sd, stc.decisions_log[0]["attacker"]])
+			break
+	print("Decision system works: ", decision_seen)
+
 	print("SIM TEST OK")
 	get_tree().quit()
 

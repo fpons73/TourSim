@@ -15,6 +15,8 @@ var _chart: ProfileChart
 var _groups_box: VBoxContainer
 var _feed_box: VBoxContainer
 var _feed_scroll: ScrollContainer
+var _my_riders_box: VBoxContainer
+var _decision_panel: Control = null
 
 func _init(p: Dictionary = {}) -> void:
 	show_back = true
@@ -26,7 +28,7 @@ func _build() -> void:
 	var rows := RaceSim.build_rows(GameState.participants)
 	_seed_int = RNG.hash_string(GameState.seed)
 	_state = RaceState.new()
-	_state.setup(_stage, rows["rider_rows"], rows["team_rows"], _seed_int)
+	_state.setup(_stage, rows["rider_rows"], rows["team_rows"], _seed_int, GameState.player_team_id)
 
 	title = _stage.name
 	subtitle = "seed %s · %s" % [GameState.seed, GameState.mode]
@@ -101,6 +103,12 @@ func _build_body() -> void:
 	_feed_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_feed_scroll.add_child(_feed_box)
 
+	# Panel táctico (solo si el jugador controla un equipo).
+	if GameState.is_controlling():
+		right.add_child(UIUtil.label("MIS CORREDORES", 12, Palette.YELLOW))
+		_my_riders_box = UIUtil.vbox(2)
+		right.add_child(_my_riders_box)
+
 func _start() -> void:
 	if GameState.speed == "instant":
 		_finish_now()
@@ -139,13 +147,20 @@ func _tick() -> void:
 func _step() -> void:
 	var snap := _state.step()
 	_apply_snapshot(snap)
+	var decision: Dictionary = snap.get("decision", {})
+	if not decision.is_empty():
+		_set_running(false)
+		_show_decision(decision)
 	if _state.finished:
 		_on_finished()
 
 func _finish_now() -> void:
 	if _timer != null:
 		_timer.stop()
+	_hide_decision()
 	while not _state.finished:
+		if not _state.pending_decision.is_empty():
+			_state.apply_decision("maintain")
 		var snap := _state.step()
 		_apply_snapshot(snap)
 	_on_finished()
@@ -156,6 +171,20 @@ func _apply_snapshot(snap: Dictionary) -> void:
 	_chart.set_marker(float(snap.get("km", 0.0)))
 	_refresh_groups(snap.get("groups", []))
 	_refresh_feed(snap.get("events", []))
+	_refresh_my_riders(snap.get("player_riders", []))
+
+func _refresh_my_riders(riders: Array) -> void:
+	if _my_riders_box == null:
+		return
+	UIUtil.clear(_my_riders_box)
+	for r in riders:
+		var row := UIUtil.hbox(6)
+		_my_riders_box.add_child(row)
+		var name := UIUtil.label(str(r.get("name", "")), 12, Palette.TEXT)
+		name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		row.add_child(name)
+		var fat := UIUtil.label("%.0f%%" % float(r.get("fatigue", 0.0)), 12, Palette.ORANGE)
+		row.add_child(fat)
 
 func _refresh_groups(gs: Array) -> void:
 	UIUtil.clear(_groups_box)
@@ -206,6 +235,38 @@ func _feed_entry(e: Dictionary) -> Control:
 		t.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		box.add_child(t)
 	return box
+
+func _show_decision(decision: Dictionary) -> void:
+	_hide_decision()
+	_decision_panel = PanelContainer.new()
+	_decision_panel.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+	_decision_panel.custom_minimum_size = Vector2(420, 0)
+	add_child(_decision_panel)
+
+	var box := UIUtil.vbox(10)
+	_decision_panel.add_child(box)
+	box.add_child(UIUtil.label("⚠ %s" % str(decision.get("title", "")), 18, Palette.RED))
+	box.add_child(UIUtil.label("%s ataca" % str(decision.get("attacker", "")), 16, Palette.TEXT))
+	box.add_child(UIUtil.label("SITUACIÓN", 12, Palette.BLUE))
+	var situation := UIUtil.label(str(decision.get("text", "")), 13, Palette.MUTED)
+	situation.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	box.add_child(situation)
+	box.add_child(UIUtil.label("¿Qué quieres hacer?", 13, Palette.YELLOW))
+
+	for opt in decision.get("options", []):
+		var btn := UIUtil.button("%s" % str(opt.get("label", "")), 42)
+		var oid: String = str(opt.get("id", ""))
+		btn.pressed.connect(func():
+			_state.apply_decision(oid)
+			_hide_decision()
+			_set_running(true)
+			_step())
+		box.add_child(btn)
+
+func _hide_decision() -> void:
+	if _decision_panel != null:
+		_decision_panel.queue_free()
+		_decision_panel = null
 
 func _on_finished() -> void:
 	_running = false
