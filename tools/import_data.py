@@ -220,16 +220,59 @@ def main():
 
     conn.commit()
 
+    # Contenido de ejemplo (etapas y carreras) para que la biblioteca no esté vacía.
+    sample_stage_ids = _insert_sample_stages(cur)
+
     n_teams = cur.execute("SELECT COUNT(*) FROM teams").fetchone()[0]
     n_extra = cur.execute("SELECT COUNT(*) FROM teams WHERE extra=1").fetchone()[0]
     n_riders = cur.execute("SELECT COUNT(*) FROM riders").fetchone()[0]
     n_unlinked = cur.execute("SELECT COUNT(*) FROM riders WHERE team_id IS NULL").fetchone()[0]
+    n_stages = cur.execute("SELECT COUNT(*) FROM stages").fetchone()[0]
+    n_races = cur.execute("SELECT COUNT(*) FROM races").fetchone()[0]
+    conn.commit()
     conn.close()
 
     print("Importación completada -> %s" % OUT_DB)
     print("  Equipos: %d (%d extra, sin metadatos)" % (n_teams, n_extra))
     print("  Corredores: %d" % n_riders)
     print("  Corredores sin equipo: %d" % n_unlinked)
+    print("  Etapas de ejemplo: %d" % n_stages)
+    print("  Carreras de ejemplo: %d" % n_races)
+
+
+def _insert_sample_stages(cur):
+    import json
+
+    def add_stage(name, stype, distance, start, finish, locked=0):
+        cur.execute(
+            "INSERT INTO stages (name, type, distance, start, finish, description, locked)"
+            " VALUES (?,?,?,?,?,?,?)",
+            (name, stype, distance, start, finish, "", locked),
+        )
+        return cur.lastrowid
+
+    stages = [
+        ("Prólogo — Rotterdam", "prologue", 8.0, "Rotterdam", "Rotterdam", 1),
+        ("Etapa 1 — Llana", "flat", 185.0, "Rotterdam", "La Haya", 1),
+        ("Etapa 2 — Viento cruzado", "crosswind", 165.0, "Breda", "Middelburg", 1),
+        ("Etapa 3 — Pavés", "cobbles", 210.0, "Compiègne", "Roubaix", 1),
+        ("Etapa 4 — Llana con cotas", "flat_hilly", 160.0, "Lille", "Ypres", 1),
+        ("Etapa 5 — Media Montaña", "medium_mountain", 175.0, "Belfort", "La Planche", 1),
+        ("Etapa 6 — Montaña", "mountain", 195.0, "Bourg d'Oisans", "Alpe d'Huez", 1),
+        ("Etapa 7 — CRI", "itt", 32.0, "Grenoble", "Grenoble", 1),
+    ]
+    ids = []
+    for name, stype, dist, start, finish, locked in stages:
+        ids.append(add_stage(name, stype, dist, start, finish, locked))
+
+    # Carrera de ejemplo: Tour de France 2026 — What If (prólogo + 7 etapas).
+    cur.execute(
+        "INSERT INTO races (name, edition, country, description, start_date, end_date, stage_order_json)"
+        " VALUES (?,?,?,?,?,?,?)",
+        ("Tour de France", "2026 — What If", "Francia", "Carrera de ejemplo de una semana.",
+         "2026-07-04", "2026-07-11", json.dumps(ids)),
+    )
+    return ids
 
 
 if __name__ == "__main__":

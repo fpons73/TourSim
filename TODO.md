@@ -7,7 +7,7 @@
 - [x] Hito 2 — Script de importación xlsx → seed.db (Python)
 - [x] Hito 3 — Data Layer (repos + migraciones) y carga de datos
 - [x] Hito 4 — Simulation Core (RNG, fatiga, tipos de etapa, clasificaciones)
-- [ ] Hito 5 — Menú + bibliotecas + ficha de corredor
+- [x] Hito 5 — Menú + bibliotecas + ficha de corredor
 - [ ] Hito 6 — Editores (Stage/Race/Team/Rider)
 - [ ] Hito 7 — Race View + participantes + config de partida
 - [ ] Hito 8 — IA + modo espectador + control de equipo
@@ -50,11 +50,12 @@
 - [x] Resolver de etapa (9 tipos: flat, flat_hilly, mountain, medium_mountain, itt, ttt, crosswind, cobbles, prologue)
 
 ### Hito 5 — Menú y bibliotecas
-- [ ] Menú principal
-- [ ] Biblioteca de etapas (tarjetas + perfil)
-- [ ] Biblioteca de carreras
-- [ ] Ficha de corredor (14 atributos agrupados)
-- [ ] Filtros y búsqueda
+- [x] Menú principal
+- [x] Biblioteca de etapas (tarjetas + perfil)
+- [x] Biblioteca de carreras
+- [x] Ficha de corredor (14 atributos agrupados)
+- [x] Filtros y búsqueda (corredores)
+- [x] Biblioteca y detalle de equipos
 
 ### Hito 6 — Editores
 - [ ] Stage Editor (perfil visual, básico/avanzado)
