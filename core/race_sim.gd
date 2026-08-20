@@ -52,13 +52,18 @@ static func run_race_custom(race: Race, rider_rows: Array, team_rows: Array, see
 	var total_mountain := {}
 	var stages_results: Array = []
 	var stage_winners: Array = []
+	var fatigue := {}   # rider_id -> fatiga acumulada (entre etapas)
 
 	for i in stage_list.size():
 		var st := RaceState.new()
-		st.setup(stage_list[i], rider_rows, team_rows, seed + i * 1000)
+		st.setup(stage_list[i], rider_rows, team_rows, seed + i * 1000, -1, fatigue)
 		var res := st.resolve_to_end()
 		stages_results.append(res)
 		stage_winners.append({"stage": stage_list[i].name, "winner": res.get("winner_name", "")})
+		# Recuperación entre etapas (REC).
+		for r in st.riders:
+			var rec: float = (r.attr("rec") - 50.0) / 50.0
+			fatigue[r.id] = clampf(r.fatigue * (0.45 - 0.15 * clampf(rec, 0.0, 1.0)), 0.0, 100.0)
 		for e in res["gc"]:
 			gc_times[e["id"]] = float(gc_times.get(e["id"], 0.0)) + float(e["time"])
 		for e in res["points"]:

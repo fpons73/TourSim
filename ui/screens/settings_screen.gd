@@ -39,6 +39,10 @@ func _build() -> void:
 	save.pressed.connect(func(): Config.save())
 	box.add_child(save)
 
+	var io := UIUtil.button("Importar / Exportar datos", 44)
+	io.pressed.connect(func(): SignalBus.navigation_requested.emit("data_io", {}))
+	box.add_child(io)
+
 func _toggle(text: String, key: String) -> Control:
 	var row := UIUtil.hbox(10)
 	var lab := UIUtil.label(text, 15, Palette.TEXT)

@@ -20,6 +20,7 @@ const RiderEditor = preload("res://ui/screens/rider_editor.gd")
 const ParticipantsScreen = preload("res://ui/screens/participants_screen.gd")
 const MatchSetupScreen = preload("res://ui/screens/match_setup_screen.gd")
 const RaceView = preload("res://ui/screens/race_view.gd")
+const DataIOScreen = preload("res://ui/screens/data_io_screen.gd")
 const PlaceholderScreen = preload("res://ui/screens/placeholder_screen.gd")
 
 var _stack: Array = []
@@ -123,6 +124,8 @@ func _make_screen(destination: String, payload: Variant) -> Control:
 			return MatchSetupScreen.new(p)
 		"race_view":
 			return RaceView.new(p)
+		"data_io":
+			return DataIOScreen.new(p)
 		_:
 			return PlaceholderScreen.new({"title": destination})
 

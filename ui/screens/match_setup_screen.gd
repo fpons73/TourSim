@@ -88,6 +88,17 @@ func _start() -> void:
 		var seed_i := RNG.hash_string(GameState.seed)
 		var res := RaceSim.run_race_with(race, GameState.participants, seed_i)
 		res["seed"] = GameState.seed
+		HistoryRepo.save_simulation({
+			"date": Time.get_datetime_string_from_system(),
+			"seed": GameState.seed,
+			"mode": GameState.mode,
+			"ref_type": "race",
+			"ref_id": int(payload.get("race_id", -1)),
+			"results_json": JSON.stringify(res),
+			"classifications_json": JSON.stringify({"gc": res.get("gc", [])}),
+			"events_json": "[]",
+			"decisions_json": "[]",
+		})
 		SignalBus.navigation_requested.emit("results", {"results": res, "race": true})
 	else:
 		SignalBus.navigation_requested.emit("race_view", payload)

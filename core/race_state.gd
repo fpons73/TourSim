@@ -27,7 +27,7 @@ var pending_decision: Dictionary = {}
 var decisions_log: Array = []
 var _group_counter: int = 0
 
-func setup(p_stage: Stage, rider_rows: Array, team_rows: Array, seed_value: int, p_player_team_id: int = -1) -> void:
+func setup(p_stage: Stage, rider_rows: Array, team_rows: Array, seed_value: int, p_player_team_id: int = -1, initial_fatigue: Dictionary = {}) -> void:
 	stage = p_stage
 	rng = RNG.new(seed_value)
 	player_team_id = p_player_team_id
@@ -46,6 +46,8 @@ func setup(p_stage: Stage, rider_rows: Array, team_rows: Array, seed_value: int,
 			r.team_color = t.color_primary
 			r.team_color2 = t.color_secondary
 		r.group_id = -1
+		if initial_fatigue.has(r.id):
+			r.fatigue = float(initial_fatigue[r.id])
 		riders.append(r)
 		riders_by_id[r.id] = r
 
