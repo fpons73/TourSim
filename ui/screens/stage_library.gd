@@ -71,7 +71,4 @@ func _make_card(row: Dictionary) -> Control:
 	return card
 
 func _play(row: Dictionary) -> void:
-	var seed := int(Time.get_ticks_msec() % 1000000000)
-	var res := RaceSim.run_stage(row, seed)
-	res["seed"] = seed
-	SignalBus.navigation_requested.emit("results", {"results": res})
+	SignalBus.navigation_requested.emit("participants", {"stage_id": int(row["id"])})

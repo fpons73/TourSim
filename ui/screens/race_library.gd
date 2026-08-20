@@ -79,7 +79,4 @@ func _stage_labels(stages: Array) -> Array:
 	return out
 
 func _start(race: Race) -> void:
-	var seed := int(Time.get_ticks_msec() % 1000000000)
-	var res := RaceSim.run_race(race, seed)
-	res["seed"] = seed
-	SignalBus.navigation_requested.emit("results", {"results": res, "race": true})
+	SignalBus.navigation_requested.emit("participants", {"race_id": int(race.id)})

@@ -81,17 +81,49 @@ func _group_by_id(gid: int) -> Group:
 # Resolución principal
 # ------------------------------------------------------------------
 
+var _section_index: int = 0
+
 func resolve_to_end() -> Dictionary:
+	while not finished:
+		step()
+	return get_results()
+
+## Resuelve una sección (o finaliza) y devuelve una instantánea del estado.
+func step() -> Dictionary:
+	if finished:
+		return snapshot()
 	if stage.type in ["itt", "ttt", "prologue"]:
 		_resolve_time_trial()
+		return snapshot()
+	if _section_index < stage.sections.size():
+		resolve_section(stage.sections[_section_index])
+		_section_index += 1
 	else:
-		for sec in stage.sections:
-			if finished:
-				break
-			resolve_section(sec)
-		if not finished:
-			finish_stage()
-	return get_results()
+		finish_stage()
+	return snapshot()
+
+## Instantánea del estado actual para la capa de presentación.
+func snapshot() -> Dictionary:
+	var gs: Array = []
+	for g in groups:
+		if g.riders.is_empty():
+			continue
+		var names: Array = []
+		for r in g.riders.slice(0, 6):
+			names.append({"name": r.name, "team_id": r.team_id, "abbr": r.team_abbr, "color": r.team_color})
+		gs.append({
+			"id": g.id, "name": g.name, "rider_count": g.rider_count(),
+			"gap": g.gap, "speed": g.speed, "riders": names,
+		})
+	gs.sort_custom(func(a, b): return a["gap"] < b["gap"])
+	return {
+		"km": km,
+		"finished": finished,
+		"elapsed": _leader_time() if not groups.is_empty() else 0.0,
+		"groups": gs,
+		"events": events.get_all(),
+		"event_count": events.count(),
+	}
 
 func resolve_section(sec: Dictionary) -> void:
 	var a := float(sec.get("start_km", km))

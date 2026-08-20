@@ -48,6 +48,20 @@ func _ready() -> void:
 	await _frames(2)
 	SignalBus.navigation_requested.emit("rider_editor", {"rider_id": 1})
 	await _frames(2)
+
+	SignalBus.navigation_requested.emit("participants", {"stage_id": 1})
+	await _frames(2)
+	SignalBus.navigation_requested.emit("match_setup", {"stage_id": 1})
+	await _frames(2)
+
+	# Race view con resolución instantánea.
+	GameState.participants = _make_participants()
+	GameState.mode = "spectator"
+	GameState.seed = "testseed"
+	GameState.speed = "instant"
+	SignalBus.navigation_requested.emit("race_view", {"stage_id": 1})
+	await _frames(5)
+
 	SignalBus.navigation_requested.emit("home", {})
 	await _frames(2)
 
@@ -57,3 +71,14 @@ func _ready() -> void:
 func _frames(n: int) -> void:
 	for i in n:
 		await get_tree().process_frame
+
+func _make_participants() -> Array:
+	var out: Array = []
+	var teams := TeamRepo.get_all().slice(0, 5)
+	for t in teams:
+		var riders := TeamRepo.get_riders(int(t["id"])).slice(0, 8)
+		var ids: Array = []
+		for r in riders:
+			ids.append(int(r["id"]))
+		out.append({"team_id": int(t["id"]), "rider_ids": ids})
+	return out

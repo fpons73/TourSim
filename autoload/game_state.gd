@@ -3,6 +3,8 @@ extends Node
 
 var mode: String = "spectator"       # spectator | control
 var player_team_id: int = -1
+var speed: String = "normal"         # paused | normal | fast | very_fast | instant
+var dice_animated: bool = true
 
 var seed: String = ""                # seed real usada (mostrada en UI)
 var race_id: int = -1                # -1 => etapa suelta
@@ -25,6 +27,8 @@ func reset() -> void:
 	participants = []
 	current_race = {}
 	race_state = null
+	speed = "normal"
+	dice_animated = true
 
 func is_controlling() -> bool:
 	return mode == "control" and player_team_id >= 0

@@ -2,21 +2,50 @@ class_name RaceSim
 extends RefCounted
 ## Helpers para ejecutar simulaciones (etapa o carrera) sobre el Simulation Core.
 
+static func build_rows(participants: Array) -> Dictionary:
+	var team_ids := {}
+	var rider_ids := {}
+	for p in participants:
+		var tid := int(p.get("team_id", -1))
+		if tid >= 0:
+			team_ids[tid] = true
+		var rids = p.get("rider_ids", [])
+		if rids is Array:
+			for rid in rids:
+				rider_ids[int(rid)] = true
+	var team_rows: Array = []
+	for tid in team_ids.keys():
+		var t := TeamRepo.get_by_id(int(tid))
+		if not t.is_empty():
+			team_rows.append(t)
+	var rider_rows: Array = []
+	for rid in rider_ids.keys():
+		var r := RiderRepo.get_by_id(int(rid))
+		if not r.is_empty():
+			rider_rows.append(r)
+	return {"team_rows": team_rows, "rider_rows": rider_rows}
+
 static func run_stage(stage_row: Dictionary, seed: int) -> Dictionary:
-	var stage := Stage.from_row(stage_row)
-	var st := RaceState.new()
-	st.setup(stage, RiderRepo.get_all(), TeamRepo.get_all(), seed)
-	return st.resolve_to_end()
+	return run_stage_full(Stage.from_row(stage_row), RiderRepo.get_all(), TeamRepo.get_all(), seed)
 
 static func run_stage_full(stage: Stage, rider_rows: Array, team_rows: Array, seed: int) -> Dictionary:
 	var st := RaceState.new()
 	st.setup(stage, rider_rows, team_rows, seed)
 	return st.resolve_to_end()
 
+static func run_stage_with(stage: Stage, participants: Array, seed: int) -> Dictionary:
+	var rows := build_rows(participants)
+	return run_stage_full(stage, rows["rider_rows"], rows["team_rows"], seed)
+
 ## Simula una carrera completa (suma de etapas) y devuelve la GC combinada.
 static func run_race(race: Race, seed: int) -> Dictionary:
-	var rider_rows := RiderRepo.get_all()
-	var team_rows := TeamRepo.get_all()
+	return run_race_custom(race, RiderRepo.get_all(), TeamRepo.get_all(), seed)
+
+static func run_race_with(race: Race, participants: Array, seed: int) -> Dictionary:
+	var rows := build_rows(participants)
+	return run_race_custom(race, rows["rider_rows"], rows["team_rows"], seed)
+
+static func run_race_custom(race: Race, rider_rows: Array, team_rows: Array, seed: int) -> Dictionary:
 	var stage_list := race.stages()
 	var gc_times := {}         # rider_id -> segundos
 	var total_points := {}     # rider_id -> puntos

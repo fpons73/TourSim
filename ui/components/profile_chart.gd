@@ -5,6 +5,7 @@ extends Control
 var stage: Stage = null
 var line_color: Color = Palette.BLUE
 var fill_alpha: float = 0.15
+var marker_km: float = -1.0
 
 func _init(s: Stage = null) -> void:
 	stage = s
@@ -12,6 +13,10 @@ func _init(s: Stage = null) -> void:
 
 func set_stage(s: Stage) -> void:
 	stage = s
+	queue_redraw()
+
+func set_marker(km: float) -> void:
+	marker_km = km
 	queue_redraw()
 
 func _draw() -> void:
@@ -40,3 +45,9 @@ func _draw() -> void:
 	fill.append(Vector2(w, h))
 	draw_colored_polygon(fill, Color(line_color, fill_alpha))
 	draw_polyline(points, line_color, 2.0, true)
+
+	# Marcador de posición.
+	if marker_km >= 0.0:
+		var x := clampf(marker_km / maxf(stage.distance, 1.0), 0.0, 1.0) * w
+		draw_line(Vector2(x, 0), Vector2(x, h), Color(Palette.YELLOW, 0.9), 2.0)
+		draw_circle(Vector2(x, 8.0), 4.0, Palette.YELLOW)

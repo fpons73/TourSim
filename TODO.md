@@ -9,7 +9,7 @@
 - [x] Hito 4 — Simulation Core (RNG, fatiga, tipos de etapa, clasificaciones)
 - [x] Hito 5 — Menú + bibliotecas + ficha de corredor
 - [x] Hito 6 — Editores (Stage/Race/Team/Rider)
-- [ ] Hito 7 — Race View + participantes + config de partida
+- [x] Hito 7 — Race View + participantes + config de partida
 - [ ] Hito 8 — IA + modo espectador + control de equipo
 - [ ] Hito 9 — Histórico + guardado + import/export
 - [ ] Hito 10 — Pulido (animaciones, sonido, transiciones, accesibilidad)
@@ -64,13 +64,13 @@
 - [x] Rider Editor
 
 ### Hito 7 — Race View
-- [ ] Participantes (equipos/corredores/roles)
-- [ ] Config de partida (espectador/control, velocidad, dados, seed)
-- [ ] Race View: barra superior, perfil interactivo, grupos visuales
-- [ ] Panel táctico derecho
-- [ ] Race Feed visual
-- [ ] Dados estilizados
-- [ ] Decision Panel
+- [x] Participantes (equipos/corredores)
+- [x] Config de partida (espectador/control, velocidad, dados, seed)
+- [x] Race View: barra superior, perfil con marcador, grupos visuales
+- [ ] Panel táctico derecho (→ hito 8)
+- [x] Race Feed visual
+- [ ] Dados estilizados (→ hito 10)
+- [ ] Decision Panel (→ hito 8)
 
 ### Hito 8 — IA
 - [ ] Objetivos de equipo
