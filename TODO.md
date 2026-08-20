@@ -12,7 +12,7 @@
 - [x] Hito 7 — Race View + participantes + config de partida
 - [x] Hito 8 — IA + modo espectador + control de equipo
 - [x] Hito 9 — Histórico + guardado + import/export
-- [ ] Hito 10 — Pulido (animaciones, sonido, transiciones, accesibilidad)
+- [x] Hito 10 — Pulido (animaciones, sonido, transiciones, accesibilidad)
 
 ## Detalle por hito
 
@@ -85,11 +85,11 @@
 - [x] Import/export JSON-CSV (pantalla de datos)
 
 ### Hito 10 — Pulido
-- [ ] Animaciones
-- [ ] Sonido básico
-- [ ] Transiciones
-- [ ] Accesibilidad
-- [ ] Optimización
+- [x] Animaciones (transiciones de pantalla, dados, marcador de perfil)
+- [x] Sonido básico (procedural: clic y final)
+- [x] Transiciones (fundido entre pantallas)
+- [x] Accesibilidad (escala de interfaz persistida en Config)
+- [x] Optimización (listas limitadas, simulación rápida sin render por evento)
 
 ## Repositorio
 - URL: https://github.com/fpons73/TourSim.git

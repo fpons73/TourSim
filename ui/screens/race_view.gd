@@ -17,6 +17,8 @@ var _feed_box: VBoxContainer
 var _feed_scroll: ScrollContainer
 var _my_riders_box: VBoxContainer
 var _decision_panel: Control = null
+var _dice_label: Label
+var _dice_rng: RNG
 
 func _init(p: Dictionary = {}) -> void:
 	show_back = true
@@ -27,6 +29,7 @@ func _build() -> void:
 	_stage = Stage.from_row(StageRepo.get_by_id(int(payload.get("stage_id", -1))))
 	var rows := RaceSim.build_rows(GameState.participants)
 	_seed_int = RNG.hash_string(GameState.seed)
+	_dice_rng = RNG.new(_seed_int ^ 0x9E3779B9)
 	_state = RaceState.new()
 	_state.setup(_stage, rows["rider_rows"], rows["team_rows"], _seed_int, GameState.player_team_id)
 
@@ -56,6 +59,10 @@ func _build_top_bar() -> void:
 	bar.add_child(mode_label)
 
 	bar.add_child(UIUtil.label("SEED: %s" % GameState.seed, 13, Palette.MUTED))
+
+	_dice_label = UIUtil.label("🎲 ·", 14, Palette.YELLOW)
+	_dice_label.custom_minimum_size = Vector2(48, 0)
+	bar.add_child(_dice_label)
 
 	var spacer := Control.new()
 	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -172,6 +179,17 @@ func _apply_snapshot(snap: Dictionary) -> void:
 	_refresh_groups(snap.get("groups", []))
 	_refresh_feed(snap.get("events", []))
 	_refresh_my_riders(snap.get("player_riders", []))
+	_roll_dice()
+
+func _roll_dice() -> void:
+	if _dice_label == null:
+		return
+	var value := _dice_rng.rangei(1, 6)
+	_dice_label.text = "🎲 %d" % value
+	if GameState.dice_animated and _dice_label.visible:
+		var tw := create_tween()
+		_dice_label.scale = Vector2(1.3, 1.3)
+		tw.tween_property(_dice_label, "scale", Vector2.ONE, 0.15)
 
 func _refresh_my_riders(riders: Array) -> void:
 	if _my_riders_box == null:
@@ -270,6 +288,7 @@ func _hide_decision() -> void:
 
 func _on_finished() -> void:
 	_running = false
+	Sound.play_finish()
 	var results := _state.get_results()
 	results["seed"] = GameState.seed
 	# Guardar en histórico.

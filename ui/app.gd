@@ -32,6 +32,7 @@ func _ready() -> void:
 	_push("home", {})
 
 func _on_nav(destination: String, payload: Variant) -> void:
+	Sound.play_click()
 	_push(destination, payload)
 
 func _push(destination: String, payload: Variant) -> void:
@@ -41,6 +42,9 @@ func _push(destination: String, payload: Variant) -> void:
 	if _current != null:
 		_current.queue_free()
 	add_child(screen)
+	screen.modulate.a = 0.0
+	var tw := create_tween()
+	tw.tween_property(screen, "modulate:a", 1.0, 0.18)
 	_stack.append({"dest": destination, "payload": payload})
 	_current = screen
 
@@ -53,6 +57,9 @@ func _go_back() -> void:
 		_current.queue_free()
 	_current = _make_screen(top.get("dest", "home"), top.get("payload", {}))
 	add_child(_current)
+	_current.modulate.a = 0.0
+	var tw := create_tween()
+	tw.tween_property(_current, "modulate:a", 1.0, 0.18)
 
 func _make_screen(destination: String, payload: Variant) -> Control:
 	var p: Dictionary = payload if payload is Dictionary else {}

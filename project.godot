@@ -15,6 +15,7 @@ SignalBus="*res://autoload/signal_bus.gd"
 Config="*res://autoload/config.gd"
 GameState="*res://autoload/game_state.gd"
 DataStore="*res://autoload/data_store.gd"
+Sound="*res://autoload/sound.gd"
 
 [debug]
 
