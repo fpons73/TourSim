@@ -16,6 +16,10 @@ Config="*res://autoload/config.gd"
 GameState="*res://autoload/game_state.gd"
 DataStore="*res://autoload/data_store.gd"
 
+[debug]
+
+gdscript/warnings/inferred_declaration=0
+
 [display]
 
 window/size/viewport_width=1920

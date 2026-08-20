@@ -6,7 +6,7 @@
 - [x] Hito 1 — Instalar godot-sqlite, project.godot, autoloads, tema base
 - [x] Hito 2 — Script de importación xlsx → seed.db (Python)
 - [x] Hito 3 — Data Layer (repos + migraciones) y carga de datos
-- [ ] Hito 4 — Simulation Core (RNG, fatiga, tipos de etapa, clasificaciones)
+- [x] Hito 4 — Simulation Core (RNG, fatiga, tipos de etapa, clasificaciones)
 - [ ] Hito 5 — Menú + bibliotecas + ficha de corredor
 - [ ] Hito 6 — Editores (Stage/Race/Team/Rider)
 - [ ] Hito 7 — Race View + participantes + config de partida
@@ -42,12 +42,12 @@
 - [x] Import/export JSON-CSV
 
 ### Hito 4 — Simulation Core
-- [ ] rng.gd (SplitMix64 reproducible)
-- [ ] Modelos: rider, team, stage, race, group
-- [ ] Fatigue (STA/RES/REC)
-- [ ] Clasificaciones (GC, puntos, montaña, jóvenes, equipos)
-- [ ] EventLog
-- [ ] stage_resolver.gd (9 tipos de etapa)
+- [x] rng.gd (PRNG determinista xorshift32 reproducible)
+- [x] Modelos: rider, team, stage, race, group
+- [x] Fatigue (STA/RES/REC)
+- [x] Clasificaciones (GC, puntos, montaña, jóvenes, equipos)
+- [x] EventLog
+- [x] Resolver de etapa (9 tipos: flat, flat_hilly, mountain, medium_mountain, itt, ttt, crosswind, cobbles, prologue)
 
 ### Hito 5 — Menú y bibliotecas
 - [ ] Menú principal
