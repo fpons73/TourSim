@@ -1,0 +1,17 @@
+# Godot 4+
+.godot/
+*.translation
+android/
+
+# OS
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# Godot mono
+.mono/
+data_*/
+
+# Export
+export.cfg
+export_presets.cfg
