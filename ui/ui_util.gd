@@ -31,6 +31,16 @@ static func spacer(h: float) -> Control:
 	c.custom_minimum_size = Vector2(0, h)
 	return c
 
+## Fila de formulario: etiqueta + control.
+static func form_row(lab: String, ctrl: Control) -> Control:
+	var row := hbox(10)
+	var l := label(lab, 14, Palette.MUTED)
+	l.custom_minimum_size = Vector2(170, 0)
+	row.add_child(l)
+	ctrl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(ctrl)
+	return row
+
 static func panel() -> PanelContainer:
 	return PanelContainer.new()
 

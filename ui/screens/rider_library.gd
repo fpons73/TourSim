@@ -11,11 +11,17 @@ func _init(p: Dictionary = {}) -> void:
 	super._init(p)
 
 func _build() -> void:
+	var top := UIUtil.hbox(8)
+	content.add_child(top)
 	_search = LineEdit.new()
 	_search.placeholder_text = "Buscar corredor por nombre o nacionalidad..."
 	_search.custom_minimum_size = Vector2(0, 40)
+	_search.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_search.text_changed.connect(func(_t): _reload())
-	content.add_child(_search)
+	top.add_child(_search)
+	var new_btn := UIUtil.button("+ Nuevo", 40)
+	new_btn.pressed.connect(func(): SignalBus.navigation_requested.emit("rider_editor", {}))
+	top.add_child(new_btn)
 	_list = add_scroll()
 	_reload()
 

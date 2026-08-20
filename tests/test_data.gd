@@ -49,5 +49,9 @@ func _ready() -> void:
 	var ok_export := DataIO.export_json("user://test_export.json", false)
 	print("DataIO export: ", ok_export)
 
+	TeamRepo.set_roles(1, {"1": "lider", "2": "sprinter"})
+	var roles = TeamRepo.get_roles(1)
+	print("Team roles roundtrip: ", roles.get("1", "") == "lider")
+
 	print("DATA TEST OK")
 	get_tree().quit()

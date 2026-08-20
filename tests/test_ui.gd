@@ -37,6 +37,17 @@ func _ready() -> void:
 	await _frames(2)
 	SignalBus.navigation_requested.emit("history", {})
 	await _frames(2)
+
+	SignalBus.navigation_requested.emit("stage_editor", {})
+	await _frames(2)
+	SignalBus.navigation_requested.emit("stage_editor", {"stage_id": 1})
+	await _frames(2)
+	SignalBus.navigation_requested.emit("race_editor", {})
+	await _frames(2)
+	SignalBus.navigation_requested.emit("team_editor", {"team_id": 1})
+	await _frames(2)
+	SignalBus.navigation_requested.emit("rider_editor", {"rider_id": 1})
+	await _frames(2)
 	SignalBus.navigation_requested.emit("home", {})
 	await _frames(2)
 

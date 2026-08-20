@@ -2,7 +2,7 @@ class_name TeamRepo
 extends RefCounted
 ## Repositorio de equipos (tabla teams).
 
-const COLS := ["name", "abbr", "country", "category", "color_primary", "color_secondary", "extra"]
+const COLS := ["name", "abbr", "country", "category", "color_primary", "color_secondary", "roles_json", "extra"]
 
 static func get_all() -> Array:
 	return DataStore.query("SELECT * FROM teams ORDER BY name")
@@ -64,3 +64,19 @@ static func update(id: int, data: Dictionary) -> bool:
 
 static func delete(id: int) -> bool:
 	return DataStore.execute("DELETE FROM teams WHERE id=?", [id])
+
+## Roles de la plantilla: { rider_id: rol } (rol: líder, sprinter, escalador, gregario...).
+static func get_roles(team_id: int) -> Dictionary:
+	var t := get_by_id(team_id)
+	if t.is_empty():
+		return {}
+	var raw = t.get("roles_json")
+	if raw == null or raw == "":
+		return {}
+	var parsed = JSON.parse_string(str(raw))
+	if parsed is Dictionary:
+		return parsed
+	return {}
+
+static func set_roles(team_id: int, roles: Dictionary) -> bool:
+	return update(team_id, {"roles_json": JSON.stringify(roles)})

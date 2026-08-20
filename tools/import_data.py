@@ -60,6 +60,7 @@ CREATE TABLE IF NOT EXISTS teams (
     category TEXT,
     color_primary TEXT,
     color_secondary TEXT,
+    roles_json TEXT,
     extra INTEGER DEFAULT 0
 );
 CREATE TABLE IF NOT EXISTS riders (

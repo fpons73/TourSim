@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS teams (
     category TEXT,
     color_primary TEXT,
     color_secondary TEXT,
+    roles_json TEXT,
     extra INTEGER DEFAULT 0
 );
 CREATE TABLE IF NOT EXISTS riders (
@@ -114,6 +115,14 @@ func migrate() -> void:
 		var t := s.strip_edges()
 		if t != "":
 			db.query(t + ";")
+	_ensure_column("teams", "roles_json", "TEXT")
+
+func _ensure_column(table: String, column: String, decl: String) -> void:
+	var rows := query("PRAGMA table_info(%s)" % table)
+	for r in rows:
+		if str(r.get("name", "")) == column:
+			return
+	execute("ALTER TABLE %s ADD COLUMN %s %s" % [table, column, decl])
 
 func open_db() -> bool:
 	if db == null:

@@ -29,6 +29,10 @@ func _build() -> void:
 		info.add_child(UIUtil.label("Especialidad: %s" % r.specialty, 12, Palette.ORANGE))
 	ident.add_child(info)
 
+	var edit := UIUtil.button("Editar", 36)
+	edit.pressed.connect(func(): SignalBus.navigation_requested.emit("rider_editor", {"rider_id": int(payload.get("rider_id", -1))}))
+	ident.add_child(edit)
+
 	var scroll := add_scroll()
 
 	# Atributos agrupados.

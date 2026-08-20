@@ -8,7 +8,7 @@
 - [x] Hito 3 — Data Layer (repos + migraciones) y carga de datos
 - [x] Hito 4 — Simulation Core (RNG, fatiga, tipos de etapa, clasificaciones)
 - [x] Hito 5 — Menú + bibliotecas + ficha de corredor
-- [ ] Hito 6 — Editores (Stage/Race/Team/Rider)
+- [x] Hito 6 — Editores (Stage/Race/Team/Rider)
 - [ ] Hito 7 — Race View + participantes + config de partida
 - [ ] Hito 8 — IA + modo espectador + control de equipo
 - [ ] Hito 9 — Histórico + guardado + import/export
@@ -58,10 +58,10 @@
 - [x] Biblioteca y detalle de equipos
 
 ### Hito 6 — Editores
-- [ ] Stage Editor (perfil visual, básico/avanzado)
-- [ ] Race Editor (drag & drop)
-- [ ] Team Editor (roles, colores)
-- [ ] Rider Editor
+- [x] Stage Editor (perfil visual, básico/avanzado)
+- [x] Race Editor (reordenar etapas)
+- [x] Team Editor (roles, colores)
+- [x] Rider Editor
 
 ### Hito 7 — Race View
 - [ ] Participantes (equipos/corredores/roles)

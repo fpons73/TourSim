@@ -13,6 +13,10 @@ const RiderSheet = preload("res://ui/screens/rider_sheet.gd")
 const ResultsScreen = preload("res://ui/screens/results_screen.gd")
 const SettingsScreen = preload("res://ui/screens/settings_screen.gd")
 const HistoryScreen = preload("res://ui/screens/history_screen.gd")
+const StageEditor = preload("res://ui/screens/stage_editor.gd")
+const RaceEditor = preload("res://ui/screens/race_editor.gd")
+const TeamEditor = preload("res://ui/screens/team_editor.gd")
+const RiderEditor = preload("res://ui/screens/rider_editor.gd")
 const PlaceholderScreen = preload("res://ui/screens/placeholder_screen.gd")
 
 var _stack: Array = []
@@ -67,6 +71,8 @@ func _make_screen(destination: String, payload: Variant) -> Control:
 				"items": [
 					{"title": "Crear etapa", "desc": "Stage Editor", "dest": "stage_editor", "payload": {}},
 					{"title": "Crear carrera", "desc": "Race Editor", "dest": "race_editor", "payload": {}},
+					{"title": "Crear equipo", "desc": "Team Editor", "dest": "team_editor", "payload": {}},
+					{"title": "Crear corredor", "desc": "Rider Editor", "dest": "rider_editor", "payload": {}},
 				],
 			})
 		"edit_menu":
@@ -76,7 +82,7 @@ func _make_screen(destination: String, payload: Variant) -> Control:
 				"items": [
 					{"title": "Editar etapas", "desc": "Duplicar, editar y eliminar etapas", "dest": "stage_library", "payload": {"mode": "manage"}},
 					{"title": "Editar carreras", "desc": "Gestionar carreras", "dest": "race_library", "payload": {"mode": "manage"}},
-					{"title": "Editar equipos", "desc": "Colores, roles y plantilla", "dest": "team_library", "payload": {}},
+					{"title": "Editar equipos", "desc": "Colores, roles y plantilla", "dest": "team_library", "payload": {"mode": "manage"}},
 					{"title": "Editar corredores", "desc": "Atributos y datos", "dest": "rider_library", "payload": {}},
 				],
 			})
@@ -100,6 +106,14 @@ func _make_screen(destination: String, payload: Variant) -> Control:
 			return SettingsScreen.new(p)
 		"history":
 			return HistoryScreen.new(p)
+		"stage_editor":
+			return StageEditor.new(p)
+		"race_editor":
+			return RaceEditor.new(p)
+		"team_editor":
+			return TeamEditor.new(p)
+		"rider_editor":
+			return RiderEditor.new(p)
 		_:
 			return PlaceholderScreen.new({"title": destination})
 
