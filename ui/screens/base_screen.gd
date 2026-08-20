@@ -13,6 +13,7 @@ func _init(p: Dictionary = {}) -> void:
 	payload = p
 
 func _ready() -> void:
+	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_build_structure()
 	_build()
 
