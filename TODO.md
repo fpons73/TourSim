@@ -5,7 +5,7 @@
 - [x] Hito 0 — Setup: plan.md + TODO.md + init git + remote + primer push
 - [x] Hito 1 — Instalar godot-sqlite, project.godot, autoloads, tema base
 - [x] Hito 2 — Script de importación xlsx → seed.db (Python)
-- [ ] Hito 3 — Data Layer (repos + migraciones) y carga de datos
+- [x] Hito 3 — Data Layer (repos + migraciones) y carga de datos
 - [ ] Hito 4 — Simulation Core (RNG, fatiga, tipos de etapa, clasificaciones)
 - [ ] Hito 5 — Menú + bibliotecas + ficha de corredor
 - [ ] Hito 6 — Editores (Stage/Race/Team/Rider)
@@ -35,11 +35,11 @@
 - [x] Generar data/seed.db
 
 ### Hito 3 — Data Layer
-- [ ] db.gd (singleton godot-sqlite)
-- [ ] Repositorios: team, rider, stage, race, history
-- [ ] Migraciones de esquema
-- [ ] Copia seed.db → user:// en primer arranque
-- [ ] Import/export JSON-CSV
+- [x] db.gd (singleton godot-sqlite)
+- [x] Repositorios: team, rider, stage, race, history
+- [x] Migraciones de esquema
+- [x] Copia seed.db → user:// en primer arranque
+- [x] Import/export JSON-CSV
 
 ### Hito 4 — Simulation Core
 - [ ] rng.gd (SplitMix64 reproducible)
