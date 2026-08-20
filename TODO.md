@@ -4,7 +4,7 @@
 
 - [x] Hito 0 — Setup: plan.md + TODO.md + init git + remote + primer push
 - [x] Hito 1 — Instalar godot-sqlite, project.godot, autoloads, tema base
-- [ ] Hito 2 — Script de importación xlsx → seed.db (Python)
+- [x] Hito 2 — Script de importación xlsx → seed.db (Python)
 - [ ] Hito 3 — Data Layer (repos + migraciones) y carga de datos
 - [ ] Hito 4 — Simulation Core (RNG, fatiga, tipos de etapa, clasificaciones)
 - [ ] Hito 5 — Menú + bibliotecas + ficha de corredor
@@ -29,10 +29,10 @@
 - [x] Theme.tres (paleta oscura PRD §26)
 
 ### Hito 2 — Importación de datos
-- [ ] tools/import_data.py
-- [ ] Normalización de equipos y corredores
-- [ ] Colores deterministas
-- [ ] Generar data/seed.db
+- [x] tools/import_data.py
+- [x] Normalización de equipos y corredores
+- [x] Colores deterministas
+- [x] Generar data/seed.db
 
 ### Hito 3 — Data Layer
 - [ ] db.gd (singleton godot-sqlite)
