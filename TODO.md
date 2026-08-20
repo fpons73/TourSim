@@ -2,8 +2,8 @@
 
 ## Estado de hitos
 
-- [ ] Hito 0 — Setup: plan.md + TODO.md + init git + remote + primer push
-- [ ] Hito 1 — Instalar godot-sqlite, project.godot, autoloads, tema base
+- [x] Hito 0 — Setup: plan.md + TODO.md + init git + remote + primer push
+- [x] Hito 1 — Instalar godot-sqlite, project.godot, autoloads, tema base
 - [ ] Hito 2 — Script de importación xlsx → seed.db (Python)
 - [ ] Hito 3 — Data Layer (repos + migraciones) y carga de datos
 - [ ] Hito 4 — Simulation Core (RNG, fatiga, tipos de etapa, clasificaciones)
@@ -19,14 +19,14 @@
 ### Hito 0 — Setup
 - [x] Guardar plan.md
 - [x] Guardar TODO.md
-- [ ] git init + remote origin
-- [ ] Primer commit + push
+- [x] git init + remote origin
+- [x] Primer commit + push
 
 ### Hito 1 — Base Godot
-- [ ] Descargar addon godot-sqlite (binarios Windows)
-- [ ] project.godot + estructura de carpetas
-- [ ] Autoloads: DataStore, GameState, SignalBus, Config
-- [ ] Theme.tres (paleta oscura PRD §26)
+- [x] Descargar addon godot-sqlite (binarios Windows)
+- [x] project.godot + estructura de carpetas
+- [x] Autoloads: DataStore, GameState, SignalBus, Config
+- [x] Theme.tres (paleta oscura PRD §26)
 
 ### Hito 2 — Importación de datos
 - [ ] tools/import_data.py

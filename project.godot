@@ -1,0 +1,35 @@
+; Engine configuration file.
+config_version=5
+
+[application]
+
+config/name="Pro Cycling Replay Manager"
+config/description="Simulador táctico/deportivo de ciclismo de carretera (Replay Manager V3)."
+run/main_scene="res://ui/main.tscn"
+config/features=PackedStringArray("4.7")
+config/icon="res://icon.svg"
+
+[autoload]
+
+SignalBus="*res://autoload/signal_bus.gd"
+Config="*res://autoload/config.gd"
+GameState="*res://autoload/game_state.gd"
+DataStore="*res://autoload/data_store.gd"
+
+[display]
+
+window/size/viewport_width=1920
+window/size/viewport_height=1080
+window/size/mode=2
+window/stretch/mode="canvas_items"
+window/stretch/aspect="keep"
+
+[gui]
+
+theme/custom="res://themes/theme.tres"
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+textures/default_filters/use_nearest_mipmap_filter=false

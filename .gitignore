@@ -3,6 +3,10 @@
 *.translation
 android/
 
+# Archivos temporales (p. ej. bloqueos de gdextension)
+*~
+~*
+
 # OS
 Thumbs.db
 .DS_Store
