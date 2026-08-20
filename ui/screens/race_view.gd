@@ -58,7 +58,8 @@ func _build_top_bar() -> void:
 	var mode_label := UIUtil.label("MODO: %s" % GameState.mode.to_upper(), 13, Palette.YELLOW)
 	bar.add_child(mode_label)
 
-	bar.add_child(UIUtil.label("SEED: %s" % GameState.seed, 13, Palette.MUTED))
+	if Config.show_seed:
+		bar.add_child(UIUtil.label("SEED: %s" % GameState.seed, 13, Palette.MUTED))
 
 	_dice_label = UIUtil.label("🎲 ·", 14, Palette.YELLOW)
 	_dice_label.custom_minimum_size = Vector2(48, 0)

@@ -72,7 +72,7 @@ func _start() -> void:
 	var speeds := ["normal", "fast", "very_fast", "instant"]
 	GameState.speed = speeds[_speed.selected]
 	GameState.dice_animated = _dice.selected == 0
-	GameState.show_seed = _show_seed.button_pressed
+	Config.show_seed = _show_seed.button_pressed
 
 	var seed_text := _seed_input.text.strip_edges()
 	if seed_text != "":
