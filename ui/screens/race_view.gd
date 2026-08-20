@@ -69,13 +69,16 @@ func _build_top_bar() -> void:
 	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	bar.add_child(spacer)
 
-	var pause := UIUtil.button("⏸", 38)
-	pause.pressed.connect(func(): _set_running(false))
-	bar.add_child(pause)
-	var play := UIUtil.button("▶", 38)
+	var next := UIUtil.button("⏭ Sección", 38)
+	next.pressed.connect(func(): _next_section())
+	bar.add_child(next)
+	var play := UIUtil.button("▶ Auto", 38)
 	play.pressed.connect(func(): _set_running(true))
 	bar.add_child(play)
-	var jump := UIUtil.button("⏭ Fin", 38)
+	var pause := UIUtil.button("⏸ Pausa", 38)
+	pause.pressed.connect(func(): _set_running(false))
+	bar.add_child(pause)
+	var jump := UIUtil.button("⏩ Fin", 38)
 	jump.pressed.connect(func(): _finish_now())
 	bar.add_child(jump)
 
@@ -118,6 +121,8 @@ func _build_body() -> void:
 		right.add_child(_my_riders_box)
 
 func _start() -> void:
+	# Mostrar el estado inicial (salida, pelotón) antes de empezar a avanzar.
+	_apply_snapshot(_state.snapshot())
 	if GameState.speed == "instant":
 		_finish_now()
 		return
@@ -125,8 +130,7 @@ func _start() -> void:
 	_timer.wait_time = _interval()
 	_timer.timeout.connect(_tick)
 	add_child(_timer)
-	_timer.start()
-	_running = true
+	_running = false   # arranca en pausa: el usuario avanza con «⏭ Sección» o «▶ Auto».
 
 func _interval() -> float:
 	match GameState.speed:
@@ -151,6 +155,12 @@ func _tick() -> void:
 	_step()
 	if _state.finished and _timer != null:
 		_timer.stop()
+
+## Avanza exactamente una sección (modo manual, pausado).
+func _next_section() -> void:
+	_set_running(false)
+	if not _state.finished:
+		_step()
 
 func _step() -> void:
 	var snap := _state.step()
@@ -278,8 +288,7 @@ func _show_decision(decision: Dictionary) -> void:
 		btn.pressed.connect(func():
 			_state.apply_decision(oid)
 			_hide_decision()
-			_set_running(true)
-			_step())
+			_apply_snapshot(_state.snapshot()))
 		box.add_child(btn)
 
 func _hide_decision() -> void:
