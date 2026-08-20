@@ -2,7 +2,8 @@ class_name StageEditor
 extends BaseScreen
 ## Editor de etapas (PRD §9): básico (auto-perfil) o avanzado (secciones).
 
-const TERRAINS := ["flat", "hill", "medium_mountain", "mountain", "descent", "cobbles", "crosswind"]
+const STAGE_TYPES := ["flat", "flat_hilly", "medium_mountain", "mountain", "itt", "ttt", "crosswind", "cobbles", "prologue"]
+const SECTION_TERRAINS := ["flat", "hill", "medium_mountain", "mountain", "descent", "cobbles", "crosswind", "itt", "ttt", "prologue"]
 const CATEGORIES := ["", "4", "3", "2", "1", "HC"]
 
 var _stage_id: int = -1
@@ -16,7 +17,6 @@ var _distance: SpinBox
 var _sections: Array = []          # de {terrain, gradient, category}
 var _sections_box: VBoxContainer
 var _chart: ProfileChart
-var _advanced: bool = false
 
 func _init(p: Dictionary = {}) -> void:
 	_stage_id = int(p.get("stage_id", -1))
@@ -36,7 +36,7 @@ func _build() -> void:
 	scroll.add_child(UIUtil.form_row("Fecha", _date))
 
 	_type = OptionButton.new()
-	for t in TERRAINS:
+	for t in STAGE_TYPES:
 		_type.add_item(Terrain.STAGE_TYPES.get(t, t))
 	scroll.add_child(UIUtil.form_row("Tipo", _type))
 
@@ -68,7 +68,7 @@ func _build() -> void:
 	auto_btn.pressed.connect(func(): _autogenerate())
 	profile_header.add_child(auto_btn)
 	_chart = ProfileChart.new()
-	_chart.custom_minimum_size = Vector2(0, 120)
+	_chart.custom_minimum_size = Vector2(0, 140)
 	scroll.add_child(_chart)
 
 	# Secciones (modo avanzado).
@@ -80,11 +80,13 @@ func _build() -> void:
 	save.pressed.connect(func(): _save())
 	scroll.add_child(save)
 
-	if _stage_id >= 0:
-		_load()
-
 	_type.item_selected.connect(func(_i): _autogenerate())
 	_distance.value_changed.connect(func(_v): _rebuild_chart())
+
+	if _stage_id >= 0:
+		_load()
+	else:
+		_autogenerate()
 
 func _load() -> void:
 	var row := StageRepo.get_by_id(_stage_id)
@@ -96,7 +98,7 @@ func _load() -> void:
 	_finish.text = str(row.get("finish", ""))
 	_desc.text = str(row.get("description", ""))
 	var t := str(row.get("type", "flat"))
-	_type.selected = maxi(TERRAINS.find(t), 0)
+	_type.selected = maxi(STAGE_TYPES.find(t), 0)
 	_distance.value = float(row.get("distance", 150.0))
 	var raw = row.get("sections_json")
 	if raw != null and raw != "":
@@ -115,7 +117,7 @@ func _load() -> void:
 	_autogenerate()
 
 func _autogenerate() -> void:
-	var t: String = TERRAINS[_type.selected]
+	var t: String = STAGE_TYPES[_type.selected]
 	_sections = []
 	for sec in Stage.StageProfile.build(t, _distance.value):
 		_sections.append({
@@ -141,12 +143,12 @@ func _refresh_sections_ui() -> void:
 func _section_row(i: int) -> Control:
 	var row := UIUtil.hbox(6)
 	var terrain := OptionButton.new()
-	for t in TERRAINS:
+	for t in SECTION_TERRAINS:
 		terrain.add_item(Terrain.TERRAIN_LABEL.get(t, t))
-	terrain.selected = maxi(TERRAINS.find(_sections[i]["terrain"]), 0)
+	terrain.selected = maxi(SECTION_TERRAINS.find(_sections[i]["terrain"]), 0)
 	terrain.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	terrain.item_selected.connect(func(idx):
-		_sections[i]["terrain"] = TERRAINS[idx]
+		_sections[i]["terrain"] = SECTION_TERRAINS[idx]
 		_rebuild_chart())
 	row.add_child(terrain)
 
@@ -199,7 +201,7 @@ func _build_sections_json() -> String:
 
 func _rebuild_chart() -> void:
 	var s := Stage.new()
-	s.type = TERRAINS[_type.selected]
+	s.type = STAGE_TYPES[_type.selected]
 	s.distance = _distance.value
 	s.sections = _build_sections_array()
 	_chart.set_stage(s)
@@ -224,7 +226,7 @@ func _save() -> void:
 	var data := {
 		"name": _name.text.strip_edges() if _name.text.strip_edges() != "" else "Etapa sin nombre",
 		"date": _date.text,
-		"type": TERRAINS[_type.selected],
+		"type": STAGE_TYPES[_type.selected],
 		"distance": _distance.value,
 		"start": _start.text,
 		"finish": _finish.text,
